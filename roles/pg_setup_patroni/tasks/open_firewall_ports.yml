@@ -1,0 +1,14 @@
+---
+- name: Open Firewall ports for Consul
+  ansible.posix.firewalld:
+    port: "{{ item.port }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  become: true
+  loop:
+    - port: "5432/tcp" # PostgreSQL
+    - port: "8008/tcp" # Patroni - REST API
+    - port: "2379/tcp" # Etcd - Client API
+    - port: "2380/tcp" # Etcd - Peer API
+...

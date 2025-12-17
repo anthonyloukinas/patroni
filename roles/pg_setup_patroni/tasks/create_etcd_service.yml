@@ -1,0 +1,49 @@
+---
+- name: Ensure etcd directories exist
+  ansible.builtin.file:
+    path: "{{ pg_setup_patroni_etcd_install_dir }}/{{ item }}"
+    state: directory
+    owner: etcd
+    group: etcd
+    mode: "0755"
+  loop:
+    - etc
+    - data
+    - bin
+
+- name: Include download_etcd tasks
+  ansible.builtin.include_tasks: download_etcd.yml
+  when: pg_setup_patroni_etcd_download | default(true)
+
+- name: Include etcd.service template
+  ansible.builtin.template:
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+    owner: etcd
+    group: etcd
+    mode: "0644"
+  register: etcd_service_template
+  notify:
+    - Restart Etcd Service
+
+- name: Include etcd.conf template
+  ansible.builtin.template:
+    src: etcd.conf.j2
+    dest: "{{ pg_setup_patroni_etcd_install_dir }}/etc/etcd.conf"
+    owner: etcd
+    group: etcd
+    mode: "0644"
+  notify:
+    - Restart Etcd Service
+
+- name: Reload systemd daemon  # noqa: no-handler
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: etcd_service_template.changed
+
+- name: Start and Enable Etcd Service
+  ansible.builtin.systemd_service:
+    name: etcd
+    state: started
+    enabled: true
+...

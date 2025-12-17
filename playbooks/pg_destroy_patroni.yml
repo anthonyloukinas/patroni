@@ -1,0 +1,13 @@
+---
+- name: Destroy patroni
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Include pg_destroy_patroni role
+      ansible.builtin.include_role:
+        name: pg_destroy_patroni
+      tags:
+        - pg_destroy_patroni
+...

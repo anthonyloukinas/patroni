@@ -1,0 +1,27 @@
+---
+# Patroni
+pg_setup_patroni_patroni_install_dir: /opt/patroni
+
+# PostgreSQL
+pg_setup_patroni_postgresql_bin_dir: /usr/bin
+pg_setup_patroni_postgresql_data_dir: /var/lib/pgsql/data
+
+# Replication
+pg_setup_patroni_replication_network: "172.16.0.0/24"
+pg_setup_patroni_replication_user: replicator
+pg_setup_patroni_replication_password: "{{ vault_pg_replication_password | default('changeMe123') }}"
+pg_setup_patroni_pg_wal_archive_dir: /var/lib/pgsql/backups/wal_archive
+
+# Etcd
+pg_setup_patroni_etcd_install_dir: /opt/etcd
+pg_setup_patroni_etcd_download_dir: /opt/etcd/downloads
+pg_setup_patroni_etcd_version: 3.5.25
+pg_setup_patroni_etcd_arch: linux-amd64
+pg_setup_patroni_etcd_extract_dir: "{{ pg_setup_patroni_etcd_download_dir }}/etcd-v{{ pg_setup_patroni_etcd_version }}-{{ pg_setup_patroni_etcd_arch }}"
+pg_setup_patroni_etcd_tar_file: etcd-v{{ pg_setup_patroni_etcd_version }}-{{ pg_setup_patroni_etcd_arch }}.tar.gz
+pg_setup_patroni_etcd_download_url: https://github.com/etcd-io/etcd/releases/download/v{{ pg_setup_patroni_etcd_version }}/{{ pg_setup_patroni_etcd_tar_file }}
+pg_setup_patroni_etcd_download_force: false
+# Optional: Override automatic etcd cluster group detection for Patroni
+# Auto-detection checks: 1) Host in etcd_primary group -> uses etcd_primary, 2) Host in etcd_secondary group -> uses etcd_secondary, 3) Default -> uses etcd
+# pg_setup_patroni_etcd_cluster_group: etcd_primary  # Uncomment and set to override (options: etcd, etcd_primary, etcd_secondary)
+...

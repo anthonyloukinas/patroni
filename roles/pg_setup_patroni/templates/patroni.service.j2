@@ -1,0 +1,15 @@
+[Unit]
+Description=Patroni PostgreSQL HA cluster
+After=network.target
+
+[Service]
+Type=simple
+User=postgres
+Group=postgres
+Environment="PATH={{ pg_setup_patroni_patroni_install_dir }}/venv/bin:/usr/bin:/bin"
+ExecStart={{ pg_setup_patroni_patroni_install_dir }}/venv/bin/patroni {{ pg_setup_patroni_patroni_install_dir }}/etc/patroni.yml
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

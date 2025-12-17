@@ -1,0 +1,16 @@
+[Unit]
+Description=etcd key-value store (from upstream binary)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=etcd
+Type=notify
+ExecStart={{ pg_setup_patroni_etcd_install_dir }}/bin/etcd --config-file={{ pg_setup_patroni_etcd_install_dir }}/etc/etcd.conf
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+Environment=ETCD_UNSUPPORTED_ARCH="riscv64"
+
+[Install]
+WantedBy=multi-user.target

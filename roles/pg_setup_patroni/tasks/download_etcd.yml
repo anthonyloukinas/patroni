@@ -1,0 +1,39 @@
+---
+- name: Ensure etcd download directory exists
+  ansible.builtin.file:
+    path: "{{ pg_setup_patroni_etcd_download_dir }}"
+    state: directory
+    owner: etcd
+    group: etcd
+    mode: "0755"
+
+- name: Download etcd
+  ansible.builtin.get_url:
+    url: "{{ pg_setup_patroni_etcd_download_url }}"
+    dest: "{{ pg_setup_patroni_etcd_download_dir }}"
+    mode: "0644"
+    owner: etcd
+    group: etcd
+    force: "{{ pg_setup_patroni_etcd_download_force }}"
+
+- name: Extract etcd
+  ansible.builtin.unarchive:
+    src: "{{ pg_setup_patroni_etcd_download_dir }}/{{ pg_setup_patroni_etcd_tar_file }}"
+    dest: "{{ pg_setup_patroni_etcd_extract_dir }}"
+    remote_src: true
+    owner: etcd
+    group: etcd
+
+- name: Move etcd binaries to install bin directory
+  ansible.builtin.copy:
+    src: "{{ pg_setup_patroni_etcd_extract_dir }}/{{ item }}"
+    dest: "{{ pg_setup_patroni_etcd_install_dir }}/bin/{{ item }}"
+    remote_src: true
+    owner: etcd
+    group: etcd
+    mode: "0755"
+  loop:
+    - etcd
+    - etcdctl
+    - etcdutl
+...
