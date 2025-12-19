@@ -4,11 +4,9 @@
   become: true
   gather_facts: true
 
-  vars:
-    pg_setup_patroni_pg_wal_archive_dir: /var/lib/pgsql/backups/wal_archive
-    pg_setup_patroni_replication_user: replicator
-    pg_setup_patroni_replication_password: "{{ vault_pg_setup_patroni_replication_password | default('changeMe123') }}"
-    pg_setup_patroni_etcd_download: true # Download etcd from upstream binary
+  vars_files:
+    - vars/{{ inventory_hostname }}.yml
+    - vars/sandbox.yml
 
   tasks:
     - name: Include pg_setup_patroni role

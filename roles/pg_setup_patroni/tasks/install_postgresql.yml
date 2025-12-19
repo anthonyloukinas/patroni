@@ -1,12 +1,12 @@
 ---
-- name: Check if postgresql:15 module is enabled
-  ansible.builtin.command: dnf module list postgresql:15
+- name: Check if specific postgresql version module is enabled
+  ansible.builtin.command: dnf module list postgresql:{{ pg_setup_patroni_postgresql_version }}
   register: postgresql_module_status
   changed_when: false
   failed_when: false
 
 - name: Enable postgresql dnf module
-  ansible.builtin.command: dnf module -y enable postgresql:15
+  ansible.builtin.command: dnf module -y enable postgresql:{{ pg_setup_patroni_postgresql_version }}
   when: postgresql_module_status.stdout is defined and ('postgresql' in postgresql_module_status.stdout and '[e]' not in postgresql_module_status.stdout)
   register: enable_postgresql_module
   changed_when: enable_postgresql_module.rc == 0

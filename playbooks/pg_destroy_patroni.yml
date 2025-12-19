@@ -4,10 +4,50 @@
   become: true
   gather_facts: true
 
+  vars:
+    remove_postgresql: true
+    patroni_install_dir: /opt/patroni
+    etcd_install_dir: /opt/etcd
+    postgresql_data_dir: /var/lib/pgsql/data
+
   tasks:
-    - name: Include pg_destroy_patroni role
-      ansible.builtin.include_role:
-        name: pg_destroy_patroni
-      tags:
-        - pg_destroy_patroni
+    - name: Stop and disable patroni service
+      ansible.builtin.systemd_service:
+        name: patroni
+        state: stopped
+        enabled: false
+
+    - name: Stop and disable etcd service
+      ansible.builtin.systemd_service:
+        name: etcd
+        state: stopped
+        enabled: false
+
+    - name: Remove patroni and etcd directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ patroni_install_dir }}"
+        - "{{ etcd_install_dir }}"
+        - /etc/systemd/system/patroni.service
+        - /etc/systemd/system/etcd.service
+
+    - name: Remove patroni and etcd service files + reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Remove postgresql package and data directories
+      ansible.builtin.package:
+        name: postgresql-server
+        state: absent
+      when:
+        - remove_postgresql | default(true)
+
+    - name: Remove postgresql data directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ postgresql_data_dir }}"
 ...

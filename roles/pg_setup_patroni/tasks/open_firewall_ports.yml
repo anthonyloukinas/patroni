@@ -1,5 +1,5 @@
 ---
-- name: Open Firewall ports for Consul
+- name: Open firewall ports
   ansible.posix.firewalld:
     port: "{{ item.port }}"
     permanent: true

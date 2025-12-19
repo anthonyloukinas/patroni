@@ -19,7 +19,7 @@
 - name: Extract etcd
   ansible.builtin.unarchive:
     src: "{{ pg_setup_patroni_etcd_download_dir }}/{{ pg_setup_patroni_etcd_tar_file }}"
-    dest: "{{ pg_setup_patroni_etcd_extract_dir }}"
+    dest: "{{ pg_setup_patroni_etcd_download_dir }}"
     remote_src: true
     owner: etcd
     group: etcd

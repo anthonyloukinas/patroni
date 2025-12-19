@@ -1,4 +1,11 @@
 ---
+- name: Assert redhat family
+  ansible.builtin.assert:
+    that:
+      - ansible_os_family == 'RedHat'
+    msg:
+      "This role only supports RedHat based distributions"
+
 - name: Install dependencies
   ansible.builtin.include_tasks: install_dependencies.yml
 

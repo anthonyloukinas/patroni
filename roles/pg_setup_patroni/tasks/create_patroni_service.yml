@@ -21,6 +21,9 @@
       - psycopg2-binary
     state: present
     virtualenv: /opt/patroni/venv
+    # extra_args: >-
+    #   --index-url https://{{ art_user }}:{{ art_pass }}@artifactory.example.com/artifactory/api/pypi/pypi-local/simple
+    #   --trusted-host artifactory.example.com
 
 - name: Include patroni.service template
   ansible.builtin.template:
